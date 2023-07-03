@@ -1,4 +1,4 @@
-<center>Move through the neovim history buffer as you would in the browser</center>
+<p align='center'>Move through the neovim history buffer as you would in the browser</p>
 
 ![](./pics/example.gif)
 
