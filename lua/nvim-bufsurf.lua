@@ -5,8 +5,7 @@ local config = {
     enable = true,
 }
 
-local function buffer_forward()
-    local buf = buf_list:forward()
+local function change_buffer(buf)
     if buf then
         config.enable = false
         vim.cmd("silent b " .. buf)
@@ -14,13 +13,34 @@ local function buffer_forward()
     end
 end
 
-local function buffer_backward()
-    local buf = buf_list:backward()
-    if buf then
-        config.enable = false
-        vim.cmd("silent b " .. buf)
-        config.enable = true
+local function is_buffer_not_exists(buf)
+    return vim.fn.bufexists(buf) == 0
+end
+
+local function forward_skip_unshow()
+    local buf = buf_list:forward()
+    while buf and is_buffer_not_exists(buf) do
+        buf = buf_list:delete_cur(true)
     end
+    return buf
+end
+
+local function buffer_forward()
+    -- change_buffer(buf_list:forward())
+    change_buffer(forward_skip_unshow())
+end
+
+local function backward_skip_unshow()
+    local buf = buf_list:backward()
+    while buf and is_buffer_not_exists(buf) do
+        buf = buf_list:delete_cur(false)
+    end
+    return buf
+end
+
+local function buffer_backward()
+    -- change_buffer(buf_list:backward())
+    change_buffer(backward_skip_unshow())
 end
 
 local function buffer_focus(event)
@@ -30,7 +50,12 @@ local function buffer_focus(event)
     if #event["file"] == 0 then
         return
     end
-    buf_list:insert(event["buf"])
+    local buf = event["buf"]
+    local name = vim.fn.bufname(buf)
+    if string.sub(name, 1, 1) ~= "/" then
+        return
+    end
+    buf_list:insert(buf)
 end
 
 local function setup_callback()

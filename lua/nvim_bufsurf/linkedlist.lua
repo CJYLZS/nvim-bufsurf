@@ -72,4 +72,39 @@ function LinkedList:backward()
     return ret
 end
 
+function LinkedList:delete_cur(forward)
+    if not self.cur then
+        return nil
+    end
+    if self.cur.next and self.cur.prev then
+        self.cur.prev.next = self.cur.next
+        self.cur.next.prev = self.cur.prev
+        if forward then
+            self.cur = self.next
+        else
+            self.cur = self.prev
+        end
+    elseif self.cur.next then
+        -- cur is first item
+        self.cur.next.prev = nil
+        self.cur = self.cur.next
+        self.head = self.cur
+    elseif self.cur.prev then
+        -- cur is last item
+        self.cur.prev.next = nil
+        self.cur = self.cur.prev
+        self.tail = self.cur
+    else
+        -- only cur in list
+        self.head = nil
+        self.tail = nil
+        self.cur = nil
+    end
+    self.length = self.length - 1
+    if self.cur then
+        return self.cur.value
+    end
+    return nil
+end
+
 return LinkedList
