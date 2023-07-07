@@ -6,7 +6,7 @@
 
 - move around work dirs
 
-![][./pics/dirsurf.gif]
+![](./pics/dirsurf.gif)
 
 ## Installation
 
