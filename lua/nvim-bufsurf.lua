@@ -62,7 +62,6 @@ local function buffer_include(buf)
             return false
         end
     end
-    vim.notify(name)
     return true
 end
 
